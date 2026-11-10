@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#13202B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Viajes">
+<title>Viajes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{
+  --fondo:#F4F6F8; --tinta:#13202B; --suave:#4F5E6B; --linea:#E1E6EA; --linea2:#C9D3DB;
+  --blanco:#FFFFFF; --oscuro:#13202B; --oscuro2:#1B2D3B; --oscuro3:#24394A;
+  --verde:#1E6B50; --verde-osc:#14503B; --verde-claro:#EAF3EF;
+  --azul:#1D5FA8; --naranja:#B4561A; --naranja-osc:#8A3F10; --naranja-claro:#FBEDE3;
+  --radio:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--verde)}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;margin:0}
+.oculto{display:none!important}
+
+/* acceso */
+.pantalla-oscura{min-height:100vh;background:var(--oscuro);color:#fff;display:flex;justify-content:center;padding:96px 24px 40px}
+.acceso{width:100%;max-width:380px;display:flex;flex-direction:column;gap:36px}
+.acceso h1{font-size:40px}
+.acceso p{margin:0;color:#C9D3DB;line-height:1.5}
+.campo-codigo{min-height:56px;border-radius:12px;border:1px solid #4A5F70;background:var(--oscuro2);color:#fff;padding:0 16px;font:600 20px "Space Grotesk",sans-serif;letter-spacing:.12em;width:100%;text-transform:uppercase}
+.btn-claro{min-height:52px;border-radius:12px;border:0;background:#fff;color:var(--tinta);font-weight:600;font-size:16px;width:100%}
+
+/* quién eres */
+.pantalla{min-height:100vh;display:flex;justify-content:center;padding:72px 20px 32px}
+.columna{width:100%;max-width:420px;display:flex;flex-direction:column;gap:24px}
+.rejilla-personas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.persona{min-height:136px;border-radius:16px;background:#fff;border:2px solid var(--linea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-weight:600}
+.persona:hover{border-color:var(--verde)}
+.avatar{width:52px;height:52px;border-radius:999px;color:#fff;display:flex;align-items:center;justify-content:center;font:700 20px "Space Grotesk",sans-serif}
+
+/* estructura */
+.layout{display:flex;min-height:100vh}
+.lateral{width:280px;flex:none;background:var(--oscuro);color:#E8EDF1;padding:28px 18px;display:flex;flex-direction:column;gap:24px;position:sticky;top:0;height:100vh;overflow:auto}
+.lateral h2{font-size:24px;color:#fff}
+.lat-titulo{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#A9B6C2;margin-bottom:8px}
+.viaje-link{display:flex;flex-direction:column;gap:3px;padding:13px;border-radius:12px;border:0;background:transparent;color:#E8EDF1;text-align:left;width:100%}
+.viaje-link:hover{background:var(--oscuro2)}
+.viaje-link.activo{background:var(--oscuro3);color:#fff}
+.viaje-link small{color:#A9B6C2;font-size:13px}
+.btn-borde-osc{min-height:44px;border-radius:10px;border:1px solid #4A5F70;background:transparent;color:#fff;font-weight:600;font-size:14px;width:100%}
+.principal{flex:1;min-width:0;display:flex;flex-direction:column}
+.contenedor{width:100%;max-width:760px;margin:0 auto;padding:0 20px}
+
+.cabecera{padding:40px 0 12px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.cabecera .sub{font-size:13px;font-weight:600;color:var(--verde);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cabecera h1{font-size:30px;margin-top:4px}
+.cabecera .ruta{font-size:14px;color:var(--suave);margin-top:4px}
+.enlace-btn{border:0;background:none;padding:0;color:var(--verde);font-weight:600;font-size:13px;text-decoration:underline;text-underline-offset:2px;min-height:24px}
+.cuenta-atras{text-align:right;font-size:13px;color:var(--suave)}
+.cuenta-atras strong{display:block;font:700 22px "Space Grotesk",sans-serif;color:var(--tinta)}
+
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 16px}
+.pestana{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--linea2);background:#fff;font-weight:500;font-size:14px}
+.pestana.activa{background:var(--oscuro);border-color:var(--oscuro);color:#fff;font-weight:600}
+.contenido{padding-bottom:120px;display:flex;flex-direction:column;gap:14px}
+
+/* componentes */
+.tarjeta{background:#fff;border:1px solid var(--linea);border-radius:var(--radio)}
+.tarjeta-osc{background:var(--oscuro);color:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.tarjeta-osc .etq{font-size:13px;color:#C9D3DB}
+.cifra{font:700 32px "Space Grotesk",sans-serif}
+.segmento{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--linea);border-radius:12px;padding:4px;gap:4px}
+.segmento button{min-height:40px;border-radius:9px;border:0;background:transparent;color:var(--suave);font-weight:500;font-size:14px}
+.segmento button.activo{background:#fff;color:var(--tinta);font-weight:600}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip-btn{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--linea2);background:#fff;font-weight:500;font-size:14px}
+.chip-btn.activo{background:var(--oscuro);border-color:var(--oscuro);color:#fff;font-weight:600}
+.chip-btn.verde{background:var(--verde);border-color:var(--verde);color:#fff;font-weight:600}
+.etiqueta{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px}
+.et-ok{background:var(--verde-claro);color:var(--verde-osc)}
+.et-pend{background:var(--naranja-claro);color:var(--naranja-osc)}
+.et-gris{background:#EEF1F4;color:var(--suave)}
+.fila-titulo{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fila-titulo h2{font-size:17px}
+.lista{display:flex;flex-direction:column}
+.fila{display:flex;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid #EEF1F4;background:transparent;border-left:0;border-right:0;border-bottom:0;width:100%;text-align:left}
+.lista .fila:first-child{border-top:0}
+.fila .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.fila .t1{font-size:15px;font-weight:600}
+.fila .t2{font-size:13px;color:var(--suave)}
+.fila .importe{text-align:right;display:flex;flex-direction:column;gap:2px;white-space:nowrap}
+.fila .importe b{font-size:15px}
+.fila .importe span{font-size:12px;color:var(--suave)}
+.vacio{padding:24px;text-align:center;color:var(--suave);font-size:14px}
+.btn{min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--verde);color:#fff;font-weight:600;font-size:15px}
+.btn:disabled{opacity:.6}
+.btn-sec{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--linea2);background:#fff;font-weight:600;font-size:14px}
+.btn-sec.ok{background:var(--verde-claro);border-color:var(--verde-claro);color:var(--verde-osc)}
+.btn-peligro{min-height:48px;padding:0 18px;border-radius:12px;border:1px solid #E7C3AE;background:#fff;color:var(--naranja-osc);font-weight:600;font-size:15px}
+.btn-punteado{min-height:46px;border-radius:12px;border:1px dashed #A9B6C2;background:transparent;color:var(--suave);font-weight:600;font-size:14px;width:100%}
+.fab{position:fixed;right:max(20px,calc((100vw - 760px)/2 + 20px));bottom:28px;min-height:52px;padding:0 20px;border-radius:999px;border:0;background:var(--verde);color:#fff;font-weight:600;font-size:15px;box-shadow:0 6px 18px rgba(19,32,43,.25);z-index:5}
+.check{width:26px;height:26px;flex:none;border-radius:999px;border:2px solid var(--linea2);background:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.check.hecho{background:var(--verde);border-color:var(--verde)}
+.check svg{width:14px;height:14px}
+.resp{flex:none;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;color:#fff}
+.votar{width:56px;height:56px;flex:none;border-radius:12px;border:1px solid var(--linea2);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.votar b{font:700 18px "Space Grotesk",sans-serif}
+.votar span{font-size:11px;font-weight:600}
+.votar.activo{background:var(--verde);border-color:var(--verde);color:#fff}
+.dia-item{display:flex;gap:12px}
+.dia-item .hora{width:50px;flex:none;font:600 14px "Space Grotesk",sans-serif;padding-top:14px}
+.dia-item .caja{flex:1;min-width:0;background:#fff;border:1px solid var(--linea);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;text-align:left}
+.dia-item .caja.pend{border-style:dashed;border-color:#B9A08E}
+.tipo-item{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.form-linea{display:flex;gap:8px;flex-wrap:wrap}
+.form-linea input{flex:1 1 200px}
+
+/* formularios */
+label.et{font-size:13px;font-weight:600;color:var(--suave);display:block;margin-bottom:6px}
+.inp{width:100%;min-height:48px;border-radius:12px;border:1px solid var(--linea2);background:#fff;padding:0 14px;font-size:16px}
+textarea.inp{padding:12px 14px;min-height:80px;resize:vertical}
+.inp-grande{font:700 24px "Space Grotesk",sans-serif}
+.dos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.casilla{display:flex;align-items:center;gap:12px;min-height:40px;font-size:15px}
+.casilla input{width:20px;height:20px;accent-color:var(--verde)}
+.ayuda{font-size:13px;color:var(--suave);line-height:1.45;margin:6px 0 0}
+.partes{display:flex;flex-direction:column}
+.parte{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;border-top:1px solid #EEF1F4}
+.parte:first-child{border-top:0}
+.parte input{width:120px;min-height:44px;text-align:right}
+.aviso-partes{padding:10px 14px;border-top:1px solid #EEF1F4;background:var(--verde-claro);color:var(--verde-osc);font-size:14px;font-weight:600;border-radius:0 0 12px 12px}
+.aviso-partes.mal{background:var(--naranja-claro);color:var(--naranja-osc)}
+
+/* hoja modal */
+.velo{position:fixed;inset:0;background:rgba(19,32,43,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.hoja{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:var(--fondo);border-radius:20px 20px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px}
+.hoja-cab{display:flex;justify-content:space-between;align-items:center}
+.hoja-cab h2{font-size:20px}
+.cerrar{min-height:44px;border:0;background:none;color:var(--verde);font-weight:600;font-size:15px;padding:0}
+.botonera{display:flex;gap:10px;margin-top:6px}
+.botonera .btn{flex:1}
+
+#aviso{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--oscuro);color:#fff;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500;z-index:30;max-width:calc(100vw - 40px);box-shadow:0 6px 18px rgba(19,32,43,.25)}
+.cargando{padding:60px 20px;text-align:center;color:var(--suave)}
+
+/* móvil */
+@media (max-width: 860px){
+  .lateral{position:static;width:100%;height:auto;padding:16px 20px;gap:12px}
+  .layout{flex-direction:column}
+  .lateral .lat-bloque{display:flex;gap:8px;overflow-x:auto}
+  .lateral .lat-titulo,.lateral .solo-escritorio{display:none}
+  .viaje-link{width:auto;flex:none;padding:10px 12px}
+  .lat-pie{display:flex;gap:8px}
+  .lat-pie .btn-borde-osc{width:auto;padding:0 14px}
+}
+@media (max-width: 700px){
+  .cabecera{padding-top:28px}
+  .cabecera h1{font-size:26px}
+  .pestanas{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--linea);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;padding:0 0 env(safe-area-inset-bottom)}
+  .pestana{border:0;border-radius:0;min-height:64px;padding:0 2px;font-size:12px;font-weight:600;color:var(--suave);background:#fff}
+  .pestana.activa{background:#fff;color:var(--verde)}
+  .contenido{padding-bottom:160px}
+  .fab{bottom:88px;right:20px}
+  #aviso{bottom:150px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div class="cargando">Cargando…</div></div>
+<div id="capa"></div>
+<div id="aviso" class="oculto" role="status" aria-live="polite"></div>
+
+<script>
+/* ===== Configuración: pega aquí la URL de tu aplicación web de Apps Script ===== */
+const API_URL = 'https://script.google.com/macros/s/AKfycby73Fbv9UsqstfeeeKeTOB1XdJ6-T0rTuw7N3fWZ3_UmvlL2bW8uBAtEZd5kKnoylzS0w/exec';
+/* =============================================================================== */
+
+const DEMO = !API_URL;
+const COLORES = ['#1E6B50', '#1D5FA8', '#6A4C93', '#B4561A', '#0F7287', '#8C5A1E', '#4C5BA8', '#A03E6A'];
+const CATEGORIAS = ['Transporte', 'Alojamiento', 'Comida', 'Mercadillos y ocio', 'Compras', 'Otros'];
+const TIPOS_ITEM = ['Vuelo', 'Tren', 'Coche', 'Alojamiento', 'Plan', 'Comida', 'Otro'];
+const COLOR_TIPO = { Vuelo: '#1D5FA8', Tren: '#1D5FA8', Coche: '#1D5FA8', Alojamiento: '#6A4C93', Plan: '#1E6B50', Comida: '#8C5A1E', Otro: '#4F5E6B' };
+const ESTADOS_ITEM = ['Hecho', 'Por reservar', 'Por definir'];
+const ESTADOS_LUGAR = ['Pendiente', 'En el itinerario', 'Visitado'];
+const ICONO_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+
+const S = {
+  codigo: ls('viajes_codigo') || '', admin: false, viajes: [], viajeId: ls('viajes_ultimo') || null,
+  d: null, yo: null, tab: 'gastos', vista: 'mio', dia: null, filtro: 'mias', form: null, ultimaCarga: 0
+};
+
+/* ---------- utilidades ---------- */
+function ls(k, v) {
+  try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; }
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function id() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function num(v) { const n = Number(String(v == null ? '' : v).replace(/\s/g, '').replace('€', '').replace(',', '.')); return isFinite(n) ? n : NaN; }
+function r2(n) { return Math.round(n * 100) / 100; }
+function eur(n) { return (r2(n) || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+function eurCorto(n) { const v = r2(n) || 0; return (Number.isInteger(v) ? v.toLocaleString('es-ES') : v.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ' €'; }
+function hoyISO() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function fechaLocal(iso) { return new Date(iso.length <= 10 ? iso + 'T12:00' : iso); }
+function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function fmtDiaLargo(iso) { return capital(fechaLocal(iso).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' }).replace('.', '')); }
+function fmtDiaCorto(iso) { const d = fechaLocal(iso); return capital(d.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '')) + ' ' + d.getDate(); }
+function fmtFecha(iso) { return iso ? fechaLocal(iso).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).replace('.', '') : ''; }
+function sumarDia(iso) { const d = fechaLocal(iso); d.setDate(d.getDate() + 1); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function aviso(txt) {
+  const el = document.getElementById('aviso'); el.textContent = txt; el.classList.remove('oculto');
+  clearTimeout(aviso.t); aviso.t = setTimeout(() => el.classList.add('oculto'), 3200);
+}
+function miembros() { return S.d && S.d.viaje ? String(S.d.viaje.miembros || '').split(',').map(s => s.trim()).filter(Boolean) : []; }
+function colorDe(nombre) { const i = miembros().indexOf(nombre); return i < 0 ? '#4F5E6B' : COLORES[i % COLORES.length]; }
+function inicial(n) { return (n || '?').trim().charAt(0).toUpperCase(); }
+
+/* ---------- servidor ---------- */
+async function api(accion, extra) {
+  const cuerpo = Object.assign({ codigo: S.codigo, accion }, extra || {});
+  if (DEMO) return demo(cuerpo);
+  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(cuerpo) });
+  const j = await res.json();
+  if (!j.ok) throw new Error(j.error || 'Error del servidor');
+  return j;
+}
+
+async function entrar(codigo) {
+  S.codigo = codigo.trim().toUpperCase();
+  try {
+    const r = await api('login');
+    S.admin = r.admin; S.viajes = r.viajes;
+    ls('viajes_codigo', S.codigo);
+    if (!S.viajes.some(v => v.id === S.viajeId)) S.viajeId = S.viajes[0] ? S.viajes[0].id : null;
+    if (S.viajeId) await cargarViaje(S.viajeId); else render();
+  } catch (e) {
+    S.codigo = ''; ls('viajes_codigo', null); render(); aviso(e.message);
+  }
+}
+
+async function cargarViaje(vid) {
+  S.viajeId = vid; ls('viajes_ultimo', vid);
+  if (!S.d || S.d.viaje.id !== vid) { S.d = null; S.dia = null; render(); }
+  try {
+    const r = await api('cargar', { viaje: vid });
+    S.d = r; S.ultimaCarga = Date.now();
+    S.yo = ls('viajes_quien_' + vid);
+    if (S.yo && !miembros().includes(S.yo)) S.yo = null;
+    render();
+  } catch (e) { aviso(e.message); if (/código/i.test(e.message)) salir(); }
+}
+
+async function guardar(tabla, fila) {
+  const clave = tabla.toLowerCase();
+  const lista = S.d[clave];
+  const i = lista.findIndex(f => f.id === fila.id);
+  const antes = i >= 0 ? lista[i] : null;
+  if (i >= 0) lista[i] = fila; else lista.push(fila);
+  render();
+  try { await api('guardar', { tabla, fila }); }
+  catch (e) { if (antes) lista[i] = antes; else lista.splice(lista.indexOf(fila), 1); render(); aviso('No se guardó: ' + e.message); }
+}
+
+async function borrar(tabla, fid) {
+  const clave = tabla.toLowerCase();
+  const copia = S.d[clave].slice();
+  S.d[clave] = S.d[clave].filter(f => f.id !== fid);
+  if (tabla === 'Dias') S.d.items = S.d.items.filter(it => it.dia !== fid);
+  render();
+  try { await api('borrar', { tabla, id: fid, viaje: S.viajeId }); }
+  catch (e) { S.d[clave] = copia; render(); aviso('No se borró: ' + e.message); }
+}
+
+function salir() {
+  ls('viajes_codigo', null); S.codigo = ''; S.d = null; S.viajes = []; S.admin = false; cerrarHoja(); render();
+}
+
+/* ---------- cálculos ---------- */
+function repartoIgual(total, personas) {
+  const cent = Math.round(total * 100), n = personas.length, base = Math.floor(cent / n), resto = cent - base * n, r = {};
+  personas.forEach((p, i) => { r[p] = (base + (i < resto ? 1 : 0)) / 100; });
+  return r;
+}
+function saldos() {
+  const b = {}; miembros().forEach(m => b[m] = 0);
+  S.d.gastos.forEach(g => {
+    if (g.liquidado || g.tipo === 'mio') return;
+    b[g.pagador] = (b[g.pagador] || 0) + g.importe;
+    Object.keys(g.reparto || {}).forEach(p => { b[p] = (b[p] || 0) - g.reparto[p]; });
+  });
+  S.d.pagos.forEach(p => { b[p.de] = (b[p.de] || 0) + p.importe; b[p.a] = (b[p.a] || 0) - p.importe; });
+  Object.keys(b).forEach(k => b[k] = r2(b[k]));
+  return b;
+}
+function transferencias() {
+  const b = saldos();
+  const deud = Object.keys(b).filter(k => b[k] < -0.009).map(k => ({ n: k, v: -b[k] })).sort((a, c) => c.v - a.v);
+  const acre = Object.keys(b).filter(k => b[k] > 0.009).map(k => ({ n: k, v: b[k] })).sort((a, c) => c.v - a.v);
+  const out = []; let i = 0, j = 0;
+  while (i < deud.length && j < acre.length) {
+    const m = r2(Math.min(deud[i].v, acre[j].v));
+    if (m > 0.009) out.push({ de: deud[i].n, a: acre[j].n, importe: m });
+    deud[i].v = r2(deud[i].v - m); acre[j].v = r2(acre[j].v - m);
+    if (deud[i].v < 0.01) i++; if (acre[j].v < 0.01) j++;
+  }
+  return out;
+}
+function miParte(g) { return (g.reparto && g.reparto[S.yo]) || 0; }
+function costeReal() { return r2(S.d.gastos.reduce((s, g) => s + miParte(g), 0)); }
+function gastoComun() { return r2(S.d.gastos.filter(g => g.tipo === 'compartido').reduce((s, g) => s + g.importe, 0)); }
+function aproximadoPendiente() {
+  return S.d.gastos.some(g => g.aproximado && !g.liquidado && g.tipo !== 'mio' && (g.pagador === S.yo || miParte(g) > 0));
+}
+function textoSaldo(v) {
+  if (Math.abs(v) < 0.01) return { t: 'Estás a cero', c: '#C9D3DB', v: '0 €' };
+  return v > 0 ? { t: 'Te deben', c: '#9CC3F0', v: '+' + eurCorto(v) } : { t: 'Debes', c: '#F2B48A', v: '−' + eurCorto(-v) };
+}
+function cuentaAtras() {
+  const v = S.d.viaje; if (!v || !v.inicio) return null;
+  const ms = fechaLocal(v.inicio) - new Date();
+  if (ms > 0) { const d = Math.ceil(ms / 86400000); return d <= 1 ? { l: 'Empieza', v: 'mañana' } : { l: 'Faltan', v: d + ' días' }; }
+  const dias = S.d.dias.map(x => x.fecha).filter(Boolean).sort();
+  const fin = dias.length ? dias[dias.length - 1] : v.inicio.slice(0, 10);
+  return hoyISO() <= fin ? { l: 'Viaje', v: 'en marcha' } : { l: 'Viaje', v: 'terminado' };
+}
+
+/* ---------- render ---------- */
+function render() {
+  const app = document.getElementById('app');
+  if (!S.codigo) { app.innerHTML = vistaAcceso(); return; }
+  if (!S.viajes.length && S.admin) { app.innerHTML = envolver('<div class="contenedor"><div class="cabecera"><h1>Viajes</h1></div><div class="tarjeta vacio">Aún no hay viajes. Crea el primero desde el panel.</div></div>'); return; }
+  if (!S.d) { app.innerHTML = envolver('<div class="cargando">Cargando…</div>'); return; }
+  if (!S.yo) { app.innerHTML = envolver(vistaQuien()); return; }
+  app.innerHTML = envolver(vistaViaje());
+}
+
+function envolver(contenido) {
+  if (!S.admin) return '<div class="principal">' + contenido + '</div>';
+  const grupos = { proximos: [], pasados: [] };
+  const hoy = hoyISO();
+  S.viajes.slice().sort((a, b) => String(b.inicio).localeCompare(String(a.inicio))).forEach(v => {
+    (String(v.inicio || '9999').slice(0, 10) >= hoy ? grupos.proximos : grupos.pasados).push(v);
+  });
+  const enlace = v => `<button type="button" class="viaje-link ${v.id === S.viajeId ? 'activo' : ''}" data-act="abrir-viaje" data-id="${esc(v.id)}">
+      <span style="font-weight:600;font-size:15px">${esc(v.nombre)}</span>
+      <small>${(n => n + (n === 1 ? ' persona' : ' personas'))(String(v.miembros || '').split(',').filter(Boolean).length)} · ${esc(v.codigo || '')}</small></button>`;
+  return `<div class="layout">
+    <nav class="lateral" aria-label="Viajes">
+      <div class="solo-escritorio"><h2>Viajes</h2><div style="font-size:13px;color:#A9B6C2;margin-top:4px">Acceso maestro</div></div>
+      ${grupos.proximos.length ? `<div><div class="lat-titulo">Próximos</div><div class="lat-bloque">${grupos.proximos.map(enlace).join('')}</div></div>` : ''}
+      ${grupos.pasados.length ? `<div><div class="lat-titulo">Terminados</div><div class="lat-bloque">${grupos.pasados.map(enlace).join('')}</div></div>` : ''}
+      <div class="lat-pie" style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+        <button type="button" class="btn-borde-osc" data-act="nuevo-viaje">+ Nuevo viaje</button>
+        <button type="button" class="btn-borde-osc" data-act="salir">Salir</button>
+      </div>
+    </nav>
+    <div class="principal">${contenido}</div></div>`;
+}
+
+function vistaAcceso() {
+  return `<div class="pantalla-oscura"><div class="acceso">
+    <div style="display:flex;flex-direction:column;gap:12px"><h1>Viajes</h1>
+    <p>Escribe el código del viaje que te han enviado.</p></div>
+    <form data-form="entrar" style="display:flex;flex-direction:column;gap:12px">
+      <label for="codigo" style="font-size:14px;font-weight:600">Código</label>
+      <input id="codigo" name="codigo" class="campo-codigo" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+      <button class="btn-claro" type="submit" style="margin-top:8px">Entrar</button>
+    </form>
+    ${DEMO ? '<p style="font-size:13px">Modo demo (sin servidor): usa el código NAVIDAD26 o MAESTRO.</p>' : ''}
+  </div></div>`;
+}
+
+function vistaQuien() {
+  const v = S.d.viaje;
+  return `<div class="pantalla"><div class="columna">
+    <div><div style="font-size:13px;font-weight:600;color:var(--verde)">${esc(v.nombre)}</div>
+    <h1 style="font-size:32px;margin-top:6px">¿Quién eres?</h1></div>
+    <div class="rejilla-personas">${miembros().map(m => `<button type="button" class="persona" data-act="soy" data-n="${esc(m)}">
+      <span class="avatar" style="background:${colorDe(m)}">${esc(inicial(m))}</span>${esc(m)}</button>`).join('')}</div>
+    ${!S.admin ? '<button type="button" class="enlace-btn" data-act="salir" style="align-self:flex-start">Usar otro código</button>' : ''}
+  </div></div>`;
+}
+
+function vistaViaje() {
+  const v = S.d.viaje, ca = cuentaAtras();
+  const tabs = [['gastos', 'Gastos'], ['plan', 'Itinerario'], ['lugares', 'Lugares'], ['tareas', 'To-do'], ['fotos', 'Fotos'], ['cuentas', 'Cuentas']];
+  const cuerpo = { gastos: tabGastos, plan: tabPlan, lugares: tabLugares, tareas: tabTareas, fotos: tabFotos, cuentas: tabCuentas }[S.tab]();
+  return `<div class="contenedor">
+    <header class="cabecera">
+      <div style="min-width:0">
+        <div class="sub">Hola, ${esc(S.yo)} <button type="button" class="enlace-btn" data-act="cambiar-yo">cambiar</button>
+          ${S.admin ? '<button type="button" class="enlace-btn" data-act="editar-viaje">ajustes del viaje</button>' : '<button type="button" class="enlace-btn" data-act="salir">salir</button>'}</div>
+        <h1>${esc(v.nombre)}</h1>
+        ${v.ruta ? `<div class="ruta">${esc(v.ruta)}</div>` : ''}
+      </div>
+      ${ca ? `<div class="cuenta-atras">${esc(ca.l)}<strong>${esc(ca.v)}</strong></div>` : ''}
+    </header>
+    <nav class="pestanas" aria-label="Secciones">${tabs.map(([k, l]) => `<button type="button" class="pestana ${S.tab === k ? 'activa' : ''}" data-act="tab" data-t="${k}" aria-current="${S.tab === k ? 'page' : 'false'}">${l}</button>`).join('')}</nav>
+    <section class="contenido">${cuerpo}</section>
+  </div>`;
+}
+
+/* --- gastos --- */
+function tabGastos() {
+  const mio = S.vista === 'mio';
+  const b = saldos(), ts = textoSaldo(b[S.yo] || 0);
+  let lista = S.d.gastos.filter(g => mio ? (miParte(g) > 0 || (g.pagador === S.yo && g.tipo !== 'mio')) : g.tipo !== 'mio');
+  lista = lista.slice().sort((a, c) => String(c.fecha).localeCompare(String(a.fecha)) || 0);
+  const filas = lista.map(g => {
+    const n = Object.keys(g.reparto || {}).length;
+    let det;
+    if (g.tipo === 'mio') det = 'Gasto personal';
+    else if (g.tipo === 'prestamo') {
+      const otros = Object.keys(g.reparto || {}).filter(p => p !== g.pagador && g.reparto[p] > 0);
+      det = 'Pagó ' + g.pagador + ' · ' + otros.map(p => p + ' ' + eurCorto(g.reparto[p])).join(', ');
+    } else det = 'Pagó ' + g.pagador + ' · entre ' + n;
+    const etq = g.tipo === 'mio' ? '' : g.liquidado ? '<span class="etiqueta et-ok">Liquidado</span>' : '<span class="etiqueta et-pend">Pendiente</span>';
+    const aprox = g.aproximado ? ' <span class="etiqueta et-gris">Aproximado</span>' : '';
+    const principal = mio ? miParte(g) : g.importe;
+    const secundario = mio ? (g.tipo === 'mio' ? '' : 'de ' + eurCorto(g.importe)) : (g.tipo === 'compartido' && n ? eurCorto(g.importe / n) + ' c/u' : '');
+    return `<button type="button" class="fila" data-act="editar-gasto" data-id="${esc(g.id)}">
+      <div class="txt"><span class="t1">${esc(g.concepto)}</span><span class="t2">${esc(det)} · ${esc(fmtFecha(g.fecha))}</span><span>${etq}${aprox}</span></div>
+      <div class="importe"><b>${g.aproximado ? '≈ ' : ''}${eur(principal)}</b><span>${esc(secundario)}</span></div></button>`;
+  }).join('');
+  return `<div class="segmento" role="group" aria-label="Vista">
+      <button type="button" class="${mio ? 'activo' : ''}" data-act="vista" data-v="mio" aria-pressed="${mio}">Mi coste real</button>
+      <button type="button" class="${!mio ? 'activo' : ''}" data-act="vista" data-v="grupo" aria-pressed="${!mio}">Gasto del grupo</button></div>
+    <div class="tarjeta-osc">
+      <div class="fila-titulo" style="align-items:flex-end">
+        <div><div class="etq">${mio ? 'Lo que te ha costado a ti' : 'Gasto común del grupo'}</div><div class="cifra">${aproximadoPendiente() ? '≈ ' : ''}${eur(mio ? costeReal() : gastoComun())}</div></div>
+        <div style="text-align:right"><div class="etq">${ts.t}</div><div style="font-size:18px;font-weight:700;color:${ts.c}">${ts.v}</div></div>
+      </div>
+    </div>
+    <div class="fila-titulo" style="padding-top:4px"><h2>Movimientos</h2></div>
+    <div class="tarjeta lista">${filas || '<div class="vacio">Todavía no hay gastos.</div>'}</div>
+    <button type="button" class="fab" data-act="nuevo-gasto">+ Añadir gasto</button>`;
+}
+
+function hojaGasto(g) {
+  const f = S.form;
+  const tipos = [['compartido', 'Compartido'], ['mio', 'Solo mío'], ['prestamo', 'Pagué por otro']];
+  const ms = miembros();
+  let extra = '';
+  if (f.tipo === 'compartido') {
+    const sel = ms.filter(m => f.entre[m]);
+    const imp = num(f.importe);
+    const parte = sel.length && imp > 0 ? ' · ' + eur(imp / sel.length) + ' c/u' : '';
+    extra = `<div><label class="et">Dividir entre ${sel.length} ${sel.length === 1 ? 'persona' : 'personas'}${parte}</label>
+      <div class="chips">${ms.map(m => `<button type="button" class="chip-btn ${f.entre[m] ? 'verde' : ''}" data-act="f-entre" data-n="${esc(m)}" aria-pressed="${!!f.entre[m]}">${f.entre[m] ? '✓ ' : ''}${esc(m)}</button>`).join('')}</div></div>`;
+  } else if (f.tipo === 'prestamo') {
+    const imp = num(f.importe);
+    const suma = ms.reduce((s, m) => s + (num(f.partes[m]) || 0), 0);
+    const dif = r2((imp || 0) - suma);
+    const otros = ms.filter(m => m !== f.pagador && num(f.partes[m]) > 0);
+    let msg = otros.length ? otros.map(m => m + ' debe ' + eurCorto(num(f.partes[m])) + ' a ' + f.pagador).join(' · ') : 'Indica la parte de cada uno';
+    let mal = false;
+    if (imp > 0 && Math.abs(dif) >= 0.01) { mal = true; msg = dif > 0 ? 'Faltan ' + eur(dif) + ' por asignar' : 'Las partes superan el total en ' + eur(-dif); }
+    extra = `<div><label class="et">¿Qué parte es de quién?</label>
+      <div class="tarjeta partes">${ms.map(m => `<div class="parte"><label for="p-${esc(m)}">${esc(m)}${m === f.pagador ? ' (pagó)' : ''}</label>
+        <input id="p-${esc(m)}" class="inp" inputmode="decimal" data-parte="${esc(m)}" value="${esc(f.partes[m] || '')}" placeholder="0,00"></div>`).join('')}
+        <div class="aviso-partes ${mal ? 'mal' : ''}" id="aviso-partes">${esc(msg)}</div></div></div>`;
+  }
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>${g ? 'Editar gasto' : 'Nuevo gasto'}</h2><span style="width:64px"></span></div>
+    <div class="segmento" role="group" aria-label="Tipo de gasto">${tipos.map(([k, l]) => `<button type="button" class="${f.tipo === k ? 'activo' : ''}" data-act="f-tipo" data-t="${k}" aria-pressed="${f.tipo === k}">${l}</button>`).join('')}</div>
+    <div><label class="et" for="f-concepto">Concepto</label><input id="f-concepto" class="inp" data-f="concepto" value="${esc(f.concepto)}" placeholder="Ej.: cena, gasolina, regalo…"></div>
+    <div class="dos">
+      <div><label class="et" for="f-importe">${f.tipo === 'prestamo' ? 'Total del ticket' : 'Importe'}</label><input id="f-importe" class="inp inp-grande" inputmode="decimal" data-f="importe" value="${esc(f.importe)}" placeholder="0,00"></div>
+      ${f.tipo === 'mio' ? `<div><label class="et" for="f-fecha">Fecha</label><input id="f-fecha" type="date" class="inp" data-f="fecha" value="${esc(f.fecha)}"></div>` :
+      `<div><label class="et" for="f-pagador">Pagó</label><select id="f-pagador" class="inp" data-f="pagador" data-rerender="1">${ms.map(m => `<option ${m === f.pagador ? 'selected' : ''}>${esc(m)}</option>`).join('')}</select></div>`}
+    </div>
+    <div class="dos">
+      <div><label class="et" for="f-cat">Categoría</label><select id="f-cat" class="inp" data-f="categoria">${CATEGORIAS.map(c => `<option ${c === f.categoria ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+      ${f.tipo !== 'mio' ? `<div><label class="et" for="f-fecha">Fecha</label><input id="f-fecha" type="date" class="inp" data-f="fecha" value="${esc(f.fecha)}"></div>` : ''}
+    </div>
+    ${extra}
+    <div>
+      <label class="casilla"><input type="checkbox" data-f="aproximado" ${f.aproximado ? 'checked' : ''}> Importe aproximado</label>
+      ${f.tipo !== 'mio' ? `<label class="casilla"><input type="checkbox" data-f="liquidado" ${f.liquidado ? 'checked' : ''}> Ya está pagado entre nosotros</label>` : ''}
+    </div>
+    <div class="botonera">${g ? '<button type="button" class="btn-peligro" data-act="borrar-gasto">Borrar</button>' : ''}<button type="button" class="btn" data-act="guardar-gasto">Guardar</button></div>`;
+}
+
+function abrirGasto(g) {
+  const ms = miembros();
+  if (g) {
+    const entre = {}, partes = {};
+    ms.forEach(m => { entre[m] = (g.reparto || {})[m] > 0; partes[m] = (g.reparto || {})[m] ? String(g.reparto[m]).replace('.', ',') : ''; });
+    S.form = { id: g.id, tipo: g.tipo, concepto: g.concepto, importe: String(g.importe).replace('.', ','), pagador: g.pagador, categoria: g.categoria, fecha: g.fecha || hoyISO(), aproximado: g.aproximado, liquidado: g.liquidado, entre, partes, creadoPor: g.creadoPor };
+  } else {
+    const entre = {}; ms.forEach(m => entre[m] = true);
+    S.form = { id: null, tipo: 'compartido', concepto: '', importe: '', pagador: S.yo, categoria: 'Comida', fecha: hoyISO(), aproximado: false, liquidado: false, entre, partes: {}, creadoPor: S.yo };
+  }
+  abrirHoja(() => hojaGasto(g), g ? 'gasto:' + g.id : 'gasto:nuevo');
+}
+
+function guardarGasto() {
+  leerForm();
+  const f = S.form, imp = r2(num(f.importe));
+  if (!f.concepto.trim()) return aviso('Escribe un concepto');
+  if (!(imp > 0)) return aviso('Escribe un importe válido');
+  let reparto, pagador = f.pagador;
+  if (f.tipo === 'compartido') {
+    const sel = miembros().filter(m => f.entre[m]);
+    if (!sel.length) return aviso('Elige al menos una persona');
+    reparto = repartoIgual(imp, sel);
+  } else if (f.tipo === 'mio') {
+    pagador = S.yo; reparto = { [S.yo]: imp };
+  } else {
+    reparto = {}; let suma = 0;
+    miembros().forEach(m => { const v = r2(num(f.partes[m])); if (v > 0) { reparto[m] = v; suma += v; } });
+    if (Math.abs(r2(suma) - imp) >= 0.01) return aviso('Las partes deben sumar ' + eur(imp));
+  }
+  const fila = { id: f.id || id(), viaje: S.viajeId, fecha: f.fecha || hoyISO(), concepto: f.concepto.trim(), categoria: f.categoria, importe: imp, pagador, tipo: f.tipo, reparto, aproximado: !!f.aproximado, liquidado: f.tipo === 'mio' ? false : !!f.liquidado, creadoPor: f.creadoPor || S.yo };
+  cerrarHoja(); guardar('Gastos', fila); aviso('Gasto guardado');
+}
+
+/* --- itinerario --- */
+function diasOrdenados() { return S.d.dias.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)) || (a.orden - b.orden)); }
+function tabPlan() {
+  const dias = diasOrdenados();
+  if (!dias.length) return `<div class="tarjeta vacio">Aún no hay días en el itinerario.</div><button type="button" class="btn-punteado" data-act="nuevo-dia">+ Añadir día</button>`;
+  if (!dias.some(d => d.id === S.dia)) {
+    const hoy = hoyISO(); const d = dias.find(x => x.fecha === hoy) || dias[0]; S.dia = d.id;
+  }
+  const dia = dias.find(d => d.id === S.dia);
+  const items = S.d.items.filter(i => i.dia === dia.id).sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99'));
+  return `<div class="chips">${dias.map(d => `<button type="button" class="chip-btn ${d.id === S.dia ? 'activo' : ''}" data-act="dia" data-id="${esc(d.id)}" aria-pressed="${d.id === S.dia}">${esc(d.fecha ? fmtDiaCorto(d.fecha) : d.titulo)}</button>`).join('')}
+      <button type="button" class="chip-btn" data-act="nuevo-dia">+ Día</button></div>
+    <div class="fila-titulo"><div style="font-size:15px;font-weight:600;color:var(--suave)">${esc(dia.fecha ? fmtDiaLargo(dia.fecha) : '')}${dia.titulo ? ' · ' + esc(dia.titulo) : ''}</div>
+      <button type="button" class="enlace-btn" data-act="editar-dia" data-id="${esc(dia.id)}">editar día</button></div>
+    ${items.map(it => `<div class="dia-item"><div class="hora">${esc(it.hora || '—')}</div>
+      <button type="button" class="caja ${it.estado === 'Hecho' ? '' : 'pend'}" data-act="editar-item" data-id="${esc(it.id)}">
+        <span class="fila-titulo" style="width:100%"><span class="tipo-item" style="color:${COLOR_TIPO[it.tipo] || '#4F5E6B'}">${esc(it.tipo)}</span>
+        <span class="etiqueta ${it.estado === 'Hecho' ? 'et-ok' : it.estado === 'Por reservar' ? 'et-pend' : 'et-gris'}">${esc(it.estado)}</span></span>
+        <span style="font-size:15px;font-weight:600">${esc(it.titulo)}</span>
+        ${it.detalle ? `<span style="font-size:13px;color:var(--suave);line-height:1.4;white-space:pre-line">${esc(it.detalle)}</span>` : ''}
+      </button></div>`).join('') || '<div class="tarjeta vacio">Nada planeado para este día.</div>'}
+    <button type="button" class="btn-punteado" data-act="nuevo-item">+ Añadir al día</button>`;
+}
+
+function hojaDia(d) {
+  const f = S.form;
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>${d ? 'Editar día' : 'Nuevo día'}</h2><span style="width:64px"></span></div>
+    <div><label class="et" for="d-fecha">Fecha</label><input id="d-fecha" type="date" class="inp" data-f="fecha" value="${esc(f.fecha)}"></div>
+    <div><label class="et" for="d-titulo">Lugar o título</label><input id="d-titulo" class="inp" data-f="titulo" value="${esc(f.titulo)}" placeholder="Ej.: Estrasburgo, día extra…"></div>
+    <div class="botonera">${d ? '<button type="button" class="btn-peligro" data-act="borrar-dia">Borrar día</button>' : ''}<button type="button" class="btn" data-act="guardar-dia">Guardar</button></div>`;
+}
+function hojaItem(it) {
+  const f = S.form;
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>${it ? 'Editar plan' : 'Añadir al día'}</h2><span style="width:64px"></span></div>
+    <div><label class="et" for="i-titulo">Qué</label><input id="i-titulo" class="inp" data-f="titulo" value="${esc(f.titulo)}" placeholder="Ej.: Vuelo Estrasburgo → Lisboa"></div>
+    <div class="dos">
+      <div><label class="et" for="i-hora">Hora</label><input id="i-hora" type="time" class="inp" data-f="hora" value="${esc(f.hora)}"></div>
+      <div><label class="et" for="i-tipo">Tipo</label><select id="i-tipo" class="inp" data-f="tipo">${TIPOS_ITEM.map(t => `<option ${t === f.tipo ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="dos">
+      <div><label class="et" for="i-estado">Estado</label><select id="i-estado" class="inp" data-f="estado">${ESTADOS_ITEM.map(t => `<option ${t === f.estado ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+      <div><label class="et" for="i-dia">Día</label><select id="i-dia" class="inp" data-f="dia">${diasOrdenados().map(d => `<option value="${esc(d.id)}" ${d.id === f.dia ? 'selected' : ''}>${esc(d.fecha ? fmtDiaCorto(d.fecha) : '')} ${esc(d.titulo)}</option>`).join('')}</select></div>
+    </div>
+    <div><label class="et" for="i-detalle">Detalles</label><textarea id="i-detalle" class="inp" data-f="detalle" placeholder="Dirección, código de reserva, quién se encarga…">${esc(f.detalle)}</textarea></div>
+    <div class="botonera">${it ? '<button type="button" class="btn-peligro" data-act="borrar-item">Borrar</button>' : ''}<button type="button" class="btn" data-act="guardar-item">Guardar</button></div>`;
+}
+
+/* --- lugares --- */
+function tabLugares() {
+  const orden = { 'Pendiente': 0, 'En el itinerario': 1, 'Visitado': 2 };
+  const lista = S.d.lugares.slice().sort((a, b) => (orden[a.estado] - orden[b.estado]) || ((b.votos || []).length - (a.votos || []).length));
+  return `<div class="lista" style="gap:10px">${lista.map(l => {
+      const votos = l.votos || [], mio = votos.includes(S.yo);
+      const cls = l.estado === 'En el itinerario' ? 'et-ok' : l.estado === 'Visitado' ? 'et-gris' : 'et-pend';
+      return `<div class="tarjeta" style="padding:14px;display:flex;gap:12px;align-items:center">
+        <button type="button" data-act="editar-lugar" data-id="${esc(l.id)}" style="flex:1;min-width:0;border:0;background:none;padding:0;text-align:left;display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:15px;font-weight:600">${esc(l.nombre)}</span>
+          <span style="font-size:13px;color:var(--suave)">${esc([l.ciudad, l.propuso ? 'propuso ' + l.propuso : ''].filter(Boolean).join(' · '))}${votos.length ? ' · ' + esc(votos.join(', ')) : ''}</span>
+          <span><span class="etiqueta ${cls}">${esc(l.estado)}</span></span>
+        </button>
+        ${l.enlace ? `<a href="${esc(l.enlace)}" target="_blank" rel="noopener" class="btn-sec" style="display:flex;align-items:center;text-decoration:none;color:var(--tinta)">Mapa</a>` : ''}
+        <button type="button" class="votar ${mio ? 'activo' : ''}" data-act="votar" data-id="${esc(l.id)}" aria-pressed="${mio}" aria-label="Votar ${esc(l.nombre)}"><b>${votos.length}</b><span>${votos.length === 1 ? 'voto' : 'votos'}</span></button>
+      </div>`;
+    }).join('') || '<div class="tarjeta vacio">Aún no hay sitios propuestos.</div>'}</div>
+    <button type="button" class="btn-punteado" data-act="nuevo-lugar">+ Proponer un sitio</button>`;
+}
+function hojaLugar(l) {
+  const f = S.form;
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>${l ? 'Editar sitio' : 'Proponer un sitio'}</h2><span style="width:64px"></span></div>
+    <div><label class="et" for="l-nombre">Nombre</label><input id="l-nombre" class="inp" data-f="nombre" value="${esc(f.nombre)}" placeholder="Ej.: Mercadillo de la catedral"></div>
+    <div class="dos">
+      <div><label class="et" for="l-ciudad">Ciudad</label><input id="l-ciudad" class="inp" data-f="ciudad" value="${esc(f.ciudad)}"></div>
+      <div><label class="et" for="l-estado">Estado</label><select id="l-estado" class="inp" data-f="estado">${ESTADOS_LUGAR.map(t => `<option ${t === f.estado ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div><label class="et" for="l-enlace">Enlace de Google Maps (opcional)</label><input id="l-enlace" class="inp" data-f="enlace" value="${esc(f.enlace)}" placeholder="https://maps.app.goo.gl/…" inputmode="url"></div>
+    <div class="botonera">${l ? '<button type="button" class="btn-peligro" data-act="borrar-lugar">Borrar</button>' : ''}<button type="button" class="btn" data-act="guardar-lugar">Guardar</button></div>`;
+}
+
+/* --- tareas --- */
+function tabTareas() {
+  const filtros = [['mias', 'Mis tareas'], ['todas', 'Todas'], ['libres', 'Sin decidir']];
+  const vis = S.d.tareas.filter(t => S.filtro === 'todas' ? true : S.filtro === 'mias' ? (t.responsable === S.yo || t.responsable === 'Todos') : t.responsable === 'Todos');
+  const pend = vis.filter(t => !t.hecha), hechas = vis.filter(t => t.hecha).sort((a, b) => String(b.fechaHecha).localeCompare(String(a.fechaHecha)));
+  const fila = t => {
+    const resp = t.responsable === 'Todos' ? 'Todos · decidir' : t.responsable;
+    const color = t.responsable === 'Todos' ? '#4F5E6B' : colorDe(t.responsable);
+    const sub = t.hecha ? 'Hecha' + (t.fechaHecha ? ' el ' + fmtFecha(t.fechaHecha) : '') : 'Creada por ' + (t.creadaPor || '—');
+    return `<div class="fila">
+      <button type="button" class="check ${t.hecha ? 'hecho' : ''}" data-act="tarea-hecha" data-id="${esc(t.id)}" aria-pressed="${!!t.hecha}" aria-label="${t.hecha ? 'Marcar como pendiente' : 'Marcar como hecha'}: ${esc(t.titulo)}">${t.hecha ? ICONO_CHECK : ''}</button>
+      <button type="button" data-act="editar-tarea" data-id="${esc(t.id)}" style="flex:1;min-width:0;border:0;background:none;padding:0;text-align:left;display:flex;flex-direction:column;gap:3px">
+        <span class="t1" style="font-size:15px;font-weight:600">${esc(t.titulo)}</span><span style="font-size:12px;color:var(--suave)">${esc(sub)}</span></button>
+      <span class="resp" style="background:${color}">${esc(resp)}</span></div>`;
+  };
+  return `<div class="chips">${filtros.map(([k, l]) => `<button type="button" class="chip-btn ${S.filtro === k ? 'activo' : ''}" data-act="filtro" data-f="${k}" aria-pressed="${S.filtro === k}">${l}</button>`).join('')}</div>
+    <div class="fila-titulo"><h2>Pendientes · ${pend.length}</h2></div>
+    <div class="tarjeta lista">${pend.map(fila).join('') || '<div class="vacio">Nada pendiente por aquí.</div>'}</div>
+    <form class="tarjeta" data-form="tarea" style="padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+      <label class="et" for="t-nueva" style="margin:0">Nueva tarea</label>
+      <input id="t-nueva" name="titulo" class="inp" placeholder="Ej.: reservar Airbnb en Barcelona" required>
+      <div class="form-linea"><label for="t-resp" class="oculto">Responsable</label>
+        <select id="t-resp" name="responsable" class="inp" style="flex:1 1 160px"><option value="Todos">Todos · decidir</option>${miembros().map(m => `<option>${esc(m)}</option>`).join('')}</select>
+        <button type="submit" class="btn">Añadir</button></div>
+    </form>
+    ${hechas.length ? `<div class="fila-titulo" style="padding-top:6px"><h2>Concluidas · ${hechas.length}</h2></div><div class="tarjeta lista">${hechas.map(fila).join('')}</div>` : ''}`;
+}
+function hojaTarea(t) {
+  const f = S.form;
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>Editar tarea</h2><span style="width:64px"></span></div>
+    <div><label class="et" for="e-titulo">Tarea</label><input id="e-titulo" class="inp" data-f="titulo" value="${esc(f.titulo)}"></div>
+    <div><label class="et" for="e-resp">Responsable</label><select id="e-resp" class="inp" data-f="responsable"><option value="Todos" ${f.responsable === 'Todos' ? 'selected' : ''}>Todos · decidir</option>${miembros().map(m => `<option ${m === f.responsable ? 'selected' : ''}>${esc(m)}</option>`).join('')}</select></div>
+    <p class="ayuda">Creada por ${esc(t.creadaPor || '—')}</p>
+    <div class="botonera"><button type="button" class="btn-peligro" data-act="borrar-tarea">Borrar</button><button type="button" class="btn" data-act="guardar-tarea">Guardar</button></div>`;
+}
+
+/* --- fotos --- */
+function tabFotos() {
+  const url = S.d.viaje.album;
+  return `<div class="tarjeta-osc" style="gap:14px">
+      <h2 style="font-size:20px">Fotos del viaje</h2>
+      ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener" class="btn-claro" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Abrir álbum compartido</a>`
+        : '<div class="etq">Todavía no hay álbum. Crea un álbum compartido en Fotos de iCloud, activa «Sitio web público» y pega aquí el enlace.</div>'}
+    </div>
+    <form class="tarjeta" data-form="album" style="padding:14px;display:flex;flex-direction:column;gap:8px">
+      <label class="et" for="album" style="margin:0">Enlace del álbum</label>
+      <div class="form-linea"><input id="album" name="url" class="inp" value="${esc(url || '')}" placeholder="https://www.icloud.com/sharedalbum/…" inputmode="url">
+      <button type="submit" class="btn">Guardar</button></div>
+    </form>`;
+}
+
+/* --- cuentas --- */
+function tabCuentas() {
+  const tr = transferencias();
+  const pagos = S.d.pagos.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  const cats = {};
+  S.d.gastos.forEach(g => { const p = miParte(g); if (p > 0) cats[g.categoria] = (cats[g.categoria] || 0) + p; });
+  const personales = r2(S.d.gastos.filter(g => g.tipo === 'mio').reduce((s, g) => s + miParte(g), 0));
+  return `<div class="fila-titulo"><h2>Para quedar a cero</h2></div>
+    <div class="tarjeta lista">${tr.map((t, i) => `<div class="fila">
+        <div class="txt"><span class="t1">${esc(t.de)} → ${esc(t.a)}</span><span style="font:700 18px 'Space Grotesk',sans-serif">${eur(t.importe)}</span></div>
+        <button type="button" class="btn-sec" data-act="pagar" data-i="${i}">Marcar pagado</button></div>`).join('') || '<div class="vacio">Todo cuadrado, nadie debe nada.</div>'}</div>
+    ${pagos.length ? `<div class="fila-titulo" style="padding-top:6px"><h2>Pagos hechos</h2></div>
+      <div class="tarjeta lista">${pagos.map(p => `<div class="fila"><div class="txt"><span class="t1">${esc(p.de)} → ${esc(p.a)} · ${eur(p.importe)}</span><span class="t2">${esc(fmtFecha(p.fecha))}</span></div>
+        <button type="button" class="btn-sec" data-act="deshacer-pago" data-id="${esc(p.id)}">Deshacer</button></div>`).join('')}</div>` : ''}
+    <div class="tarjeta-osc" style="margin-top:6px">
+      <h2 style="font-size:18px">Tu resumen, ${esc(S.yo)}</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+        ${Object.keys(cats).sort().map(c => `<div class="fila-titulo"><span class="etq">${esc(c)}</span><strong>${eur(cats[c])}</strong></div>`).join('')}
+        <div class="fila-titulo"><span class="etq">De ello, gastos personales</span><strong>${eur(personales)}</strong></div>
+        <div class="fila-titulo" style="padding-top:8px;border-top:1px solid var(--oscuro3)"><span>Coste real del viaje</span><strong style="font-size:18px">${aproximadoPendiente() ? '≈ ' : ''}${eur(costeReal())}</strong></div>
+      </div>
+    </div>`;
+}
+
+/* --- viaje (solo código maestro) --- */
+function hojaViaje(v) {
+  const f = S.form;
+  return `<div class="hoja-cab"><button type="button" class="cerrar" data-act="cerrar">Cancelar</button><h2>${v ? 'Ajustes del viaje' : 'Nuevo viaje'}</h2><span style="width:64px"></span></div>
+    <div><label class="et" for="v-nombre">Nombre</label><input id="v-nombre" class="inp" data-f="nombre" value="${esc(f.nombre)}" placeholder="Ej.: Milán · Italia"></div>
+    <div><label class="et" for="v-ruta">Ruta (opcional)</label><input id="v-ruta" class="inp" data-f="ruta" value="${esc(f.ruta)}" placeholder="Lisboa → Milán"></div>
+    <div class="dos">
+      <div><label class="et" for="v-inicio">Salida</label><input id="v-inicio" type="datetime-local" class="inp" data-f="inicio" value="${esc(f.inicio)}"></div>
+      <div><label class="et" for="v-codigo">Código de acceso</label><input id="v-codigo" class="inp" data-f="codigo" value="${esc(f.codigo)}" style="text-transform:uppercase" placeholder="MILAN26"></div>
+    </div>
+    <div><label class="et" for="v-miembros">Personas (separadas por comas)</label><input id="v-miembros" class="inp" data-f="miembros" value="${esc(f.miembros)}" placeholder="Homero"></div>
+    <p class="ayuda">Si cambias el nombre de alguien, sus gastos antiguos siguen con el nombre anterior.</p>
+    <div class="botonera"><button type="button" class="btn" data-act="guardar-viaje">Guardar</button></div>`;
+}
+
+/* ---------- hoja modal ---------- */
+let pintarHoja = null;
+function abrirHoja(fn) { pintarHoja = fn; repintarHoja(); }
+function repintarHoja() {
+  if (!pintarHoja) return;
+  document.getElementById('capa').innerHTML = `<div class="velo" data-act="velo"><div class="hoja" role="dialog" aria-modal="true">${pintarHoja()}</div></div>`;
+}
+function cerrarHoja() { pintarHoja = null; S.form = null; document.getElementById('capa').innerHTML = ''; }
+function leerForm() {
+  if (!S.form) return;
+  document.querySelectorAll('#capa [data-f]').forEach(el => { S.form[el.dataset.f] = el.type === 'checkbox' ? el.checked : el.value; });
+  document.querySelectorAll('#capa [data-parte]').forEach(el => { S.form.partes[el.dataset.parte] = el.value; });
+}
+
+/* ---------- acciones ---------- */
+const A = {
+  'tab': d => { S.tab = d.t; render(); window.scrollTo(0, 0); },
+  'vista': d => { S.vista = d.v; render(); },
+  'filtro': d => { S.filtro = d.f; render(); },
+  'dia': d => { S.dia = d.id; render(); },
+  'soy': d => { S.yo = d.n; ls('viajes_quien_' + S.viajeId, d.n); render(); },
+  'cambiar-yo': () => { S.yo = null; ls('viajes_quien_' + S.viajeId, null); render(); },
+  'salir': () => salir(),
+  'abrir-viaje': d => { S.tab = 'gastos'; cargarViaje(d.id); },
+  'cerrar': () => cerrarHoja(),
+  'velo': (d, el, e) => { if (e.target === el) cerrarHoja(); },
+
+  'nuevo-gasto': () => abrirGasto(null),
+  'editar-gasto': d => abrirGasto(S.d.gastos.find(g => g.id === d.id)),
+  'f-tipo': d => { leerForm(); S.form.tipo = d.t; if (d.t === 'prestamo') { S.form.pagador = S.yo; } repintarHoja(); },
+  'f-entre': d => { leerForm(); S.form.entre[d.n] = !S.form.entre[d.n]; repintarHoja(); },
+  'guardar-gasto': () => guardarGasto(),
+  'borrar-gasto': () => { if (confirm('¿Borrar este gasto?')) { const fid = S.form.id; cerrarHoja(); borrar('Gastos', fid); } },
+
+  'nuevo-dia': () => {
+    const dias = diasOrdenados(); const ult = dias.length ? dias[dias.length - 1].fecha : (S.d.viaje.inicio || hoyISO()).slice(0, 10);
+    S.form = { id: null, fecha: dias.length && ult ? sumarDia(ult) : ult, titulo: '' }; abrirHoja(() => hojaDia(null));
+  },
+  'editar-dia': d => { const x = S.d.dias.find(y => y.id === d.id); S.form = { id: x.id, fecha: x.fecha, titulo: x.titulo, orden: x.orden }; abrirHoja(() => hojaDia(x)); },
+  'guardar-dia': () => {
+    leerForm(); const f = S.form; if (!f.fecha) return aviso('Elige una fecha');
+    const fila = { id: f.id || id(), viaje: S.viajeId, fecha: f.fecha, titulo: f.titulo.trim(), orden: f.orden || S.d.dias.length + 1 };
+    cerrarHoja(); S.dia = fila.id; guardar('Dias', fila);
+  },
+  'borrar-dia': () => { if (confirm('¿Borrar este día y todo lo que tiene?')) { const fid = S.form.id; cerrarHoja(); S.dia = null; borrar('Dias', fid); } },
+  'nuevo-item': () => { S.form = { id: null, titulo: '', hora: '', tipo: 'Plan', estado: 'Por definir', dia: S.dia, detalle: '' }; abrirHoja(() => hojaItem(null)); },
+  'editar-item': d => { const x = S.d.items.find(y => y.id === d.id); S.form = Object.assign({}, x); abrirHoja(() => hojaItem(x)); },
+  'guardar-item': () => {
+    leerForm(); const f = S.form; if (!f.titulo.trim()) return aviso('Escribe qué es');
+    const fila = { id: f.id || id(), viaje: S.viajeId, dia: f.dia, hora: f.hora, tipo: f.tipo, titulo: f.titulo.trim(), detalle: f.detalle.trim(), estado: f.estado };
+    cerrarHoja(); S.dia = fila.dia; guardar('Items', fila);
+  },
+  'borrar-item': () => { if (confirm('¿Borrar este plan?')) { const fid = S.form.id; cerrarHoja(); borrar('Items', fid); } },
+
+  'nuevo-lugar': () => { S.form = { id: null, nombre: '', ciudad: '', enlace: '', estado: 'Pendiente' }; abrirHoja(() => hojaLugar(null)); },
+  'editar-lugar': d => { const x = S.d.lugares.find(y => y.id === d.id); S.form = Object.assign({}, x); abrirHoja(() => hojaLugar(x)); },
+  'guardar-lugar': () => {
+    leerForm(); const f = S.form; if (!f.nombre.trim()) return aviso('Escribe el nombre');
+    const enlace = f.enlace.trim(); if (enlace && !/^https:\/\//i.test(enlace)) return aviso('El enlace debe empezar por https://');
+    const previo = f.id ? S.d.lugares.find(y => y.id === f.id) : null;
+    const fila = { id: f.id || id(), viaje: S.viajeId, nombre: f.nombre.trim(), ciudad: f.ciudad.trim(), enlace, propuso: previo ? previo.propuso : S.yo, votos: previo ? previo.votos : [S.yo], estado: f.estado };
+    cerrarHoja(); guardar('Lugares', fila);
+  },
+  'borrar-lugar': () => { if (confirm('¿Borrar este sitio?')) { const fid = S.form.id; cerrarHoja(); borrar('Lugares', fid); } },
+  'votar': async d => {
+    const l = S.d.lugares.find(y => y.id === d.id); const antes = (l.votos || []).slice();
+    l.votos = antes.includes(S.yo) ? antes.filter(x => x !== S.yo) : antes.concat(S.yo); render();
+    try { const r = await api('votar', { viaje: S.viajeId, id: d.id, persona: S.yo }); l.votos = r.fila.votos; render(); }
+    catch (e) { l.votos = antes; render(); aviso(e.message); }
+  },
+
+  'tarea-hecha': d => {
+    const t = S.d.tareas.find(y => y.id === d.id);
+    guardar('Tareas', Object.assign({}, t, { hecha: !t.hecha, fechaHecha: !t.hecha ? hoyISO() : '' }));
+  },
+  'editar-tarea': d => { const x = S.d.tareas.find(y => y.id === d.id); S.form = Object.assign({}, x); abrirHoja(() => hojaTarea(x)); },
+  'guardar-tarea': () => {
+    leerForm(); const f = S.form; if (!f.titulo.trim()) return aviso('Escribe la tarea');
+    const fila = Object.assign({}, S.d.tareas.find(y => y.id === f.id), { titulo: f.titulo.trim(), responsable: f.responsable });
+    cerrarHoja(); guardar('Tareas', fila);
+  },
+  'borrar-tarea': () => { if (confirm('¿Borrar esta tarea?')) { const fid = S.form.id; cerrarHoja(); borrar('Tareas', fid); } },
+
+  'pagar': d => {
+    const t = transferencias()[Number(d.i)]; if (!t) return;
+    guardar('Pagos', { id: id(), viaje: S.viajeId, fecha: hoyISO(), de: t.de, a: t.a, importe: t.importe }); aviso('Pago registrado');
+  },
+  'deshacer-pago': d => borrar('Pagos', d.id),
+
+  'nuevo-viaje': () => { S.form = { id: null, nombre: '', ruta: '', inicio: '', codigo: '', miembros: 'Homero', album: '' }; abrirHoja(() => hojaViaje(null)); },
+  'editar-viaje': () => { const v = S.d.viaje; S.form = Object.assign({}, v); abrirHoja(() => hojaViaje(v)); },
+  'guardar-viaje': async () => {
+    leerForm(); const f = S.form;
+    const fila = { id: f.id || '', nombre: f.nombre.trim(), ruta: (f.ruta || '').trim(), inicio: f.inicio, codigo: f.codigo.trim().toUpperCase(),
+      miembros: f.miembros.split(',').map(s => s.trim()).filter(Boolean).join(','), album: f.album || '', creado: f.creado || '' };
+    if (!fila.nombre) return aviso('Escribe el nombre');
+    if (!fila.miembros) return aviso('Añade al menos una persona');
+    try {
+      const r = await api('guardarViaje', { fila });
+      cerrarHoja();
+      const i = S.viajes.findIndex(v => v.id === r.fila.id);
+      if (i >= 0) S.viajes[i] = r.fila; else S.viajes.push(r.fila);
+      aviso('Viaje guardado'); await cargarViaje(r.fila.id);
+    } catch (e) { aviso(e.message); }
+  }
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  if (el.dataset.act === 'velo' && e.target !== el) return;
+  const fn = A[el.dataset.act]; if (fn) fn(el.dataset, el, e);
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('#capa [data-rerender]')) { leerForm(); repintarHoja(); }
+});
+document.addEventListener('input', e => {
+  if (!S.form || !S.form.partes) return;
+  if (e.target.matches('#capa [data-parte], #capa [data-f="importe"]') && S.form.tipo === 'prestamo') {
+    leerForm();
+    const ms = miembros(), imp = num(S.form.importe), suma = ms.reduce((s, m) => s + (num(S.form.partes[m]) || 0), 0), dif = r2((imp || 0) - suma);
+    const el = document.getElementById('aviso-partes'); if (!el) return;
+    const otros = ms.filter(m => m !== S.form.pagador && num(S.form.partes[m]) > 0);
+    let msg = otros.length ? otros.map(m => m + ' debe ' + eurCorto(num(S.form.partes[m])) + ' a ' + S.form.pagador).join(' · ') : 'Indica la parte de cada uno';
+    let mal = false;
+    if (imp > 0 && Math.abs(dif) >= 0.01) { mal = true; msg = dif > 0 ? 'Faltan ' + eur(dif) + ' por asignar' : 'Las partes superan el total en ' + eur(-dif); }
+    el.textContent = msg; el.classList.toggle('mal', mal);
+  }
+});
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('[data-form]'); if (!f) return;
+  e.preventDefault();
+  const datos = Object.fromEntries(new FormData(f).entries());
+  if (f.dataset.form === 'entrar') return entrar(datos.codigo || '');
+  if (f.dataset.form === 'tarea') {
+    if (!datos.titulo.trim()) return;
+    guardar('Tareas', { id: id(), viaje: S.viajeId, titulo: datos.titulo.trim(), responsable: datos.responsable, creadaPor: S.yo, hecha: false, fechaHecha: '' });
+    aviso('Tarea añadida');
+  }
+  if (f.dataset.form === 'album') {
+    const url = (datos.url || '').trim();
+    if (url && !/^https:\/\//i.test(url)) return aviso('El enlace debe empezar por https://');
+    try { await api('album', { viaje: S.viajeId, url }); S.d.viaje.album = url; render(); aviso('Álbum guardado'); }
+    catch (err) { aviso(err.message); }
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && pintarHoja) cerrarHoja(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && S.d && !pintarHoja && Date.now() - S.ultimaCarga > 20000) cargarViaje(S.viajeId);
+});
+
+/* ---------- modo demo (sin servidor) ---------- */
+function demoBase() {
+  const v = 'navidad26', hoy = '2026-11-10', todos = ['Homero', 'Mauricio', 'Belén', 'Tilin'];
+  const ig = t => repartoIgualFijo(t, todos);
+  return {
+    Viajes: [{ id: v, nombre: 'Navidad 2026 · Mercadillos', codigo: 'NAVIDAD26', inicio: '2026-12-19T07:00', miembros: todos.join(','), album: '', ruta: 'Lisboa → Barcelona → Estrasburgo → Selva Negra', creado: hoy }],
+    Gastos: [
+      { id: 'g1', viaje: v, fecha: hoy, concepto: 'Vuelo Lisboa → Barcelona', categoria: 'Transporte', importe: 123.96, pagador: 'Homero', tipo: 'compartido', reparto: ig(123.96), aproximado: false, liquidado: true, creadoPor: 'Homero' },
+      { id: 'g2', viaje: v, fecha: hoy, concepto: 'Vuelo Barcelona → Estrasburgo', categoria: 'Transporte', importe: 240, pagador: 'Tilin', tipo: 'compartido', reparto: ig(240), aproximado: false, liquidado: true, creadoPor: 'Homero' },
+      { id: 'g3', viaje: v, fecha: hoy, concepto: 'Entradas mercado Ravennaschlucht', categoria: 'Mercadillos y ocio', importe: 40, pagador: 'Belén', tipo: 'compartido', reparto: ig(40), aproximado: true, liquidado: false, creadoPor: 'Homero' }
+    ],
+    Pagos: [],
+    Dias: [
+      { id: 'd19', viaje: v, fecha: '2026-12-19', titulo: 'Barcelona', orden: 1 },
+      { id: 'd20', viaje: v, fecha: '2026-12-20', titulo: 'Estrasburgo → Selva Negra', orden: 2 },
+      { id: 'd21', viaje: v, fecha: '2026-12-21', titulo: 'Estrasburgo', orden: 3 }
+    ],
+    Items: [
+      { id: 'i1', viaje: v, dia: 'd19', hora: '07:00', tipo: 'Vuelo', titulo: 'Lisboa → Barcelona', detalle: 'Llegada 10:00 · compró Homero', estado: 'Hecho' },
+      { id: 'i2', viaje: v, dia: 'd19', hora: '', tipo: 'Alojamiento', titulo: 'Airbnb en Barcelona (sáb → dom)', detalle: '', estado: 'Por reservar' },
+      { id: 'i3', viaje: v, dia: 'd20', hora: '12:15', tipo: 'Vuelo', titulo: 'Barcelona → Estrasburgo', detalle: 'Llegada 14:10 · compró Tilin', estado: 'Hecho' },
+      { id: 'i4', viaje: v, dia: 'd20', hora: '14:30', tipo: 'Coche', titulo: 'Recoger coche en el aeropuerto', detalle: 'Reserva: Mauricio', estado: 'Por reservar' },
+      { id: 'i5', viaje: v, dia: 'd20', hora: '16:30', tipo: 'Plan', titulo: 'Mercado de Navidad de la Ravennaschlucht', detalle: 'Entradas: Belén', estado: 'Hecho' },
+      { id: 'i6', viaje: v, dia: 'd20', hora: '', tipo: 'Alojamiento', titulo: 'Airbnb en la zona de la Ravennaschlucht', detalle: '', estado: 'Por reservar' },
+      { id: 'i7', viaje: v, dia: 'd21', hora: '', tipo: 'Coche', titulo: 'Volver a Estrasburgo y devolver el coche', detalle: '', estado: 'Por definir' },
+      { id: 'i8', viaje: v, dia: 'd21', hora: '', tipo: 'Plan', titulo: 'Conocer Estrasburgo', detalle: 'Quizá algún mercadillo cercano', estado: 'Por definir' }
+    ],
+    Lugares: [
+      { id: 'l1', viaje: v, nombre: 'Mercado de Navidad de la Ravennaschlucht', ciudad: 'Selva Negra', enlace: '', propuso: 'Homero', votos: [], estado: 'En el itinerario' },
+      { id: 'l2', viaje: v, nombre: 'Centro histórico de Estrasburgo', ciudad: 'Estrasburgo', enlace: '', propuso: 'Homero', votos: [], estado: 'Pendiente' },
+      { id: 'l3', viaje: v, nombre: 'Mercadillo cerca de Estrasburgo', ciudad: 'Estrasburgo', enlace: '', propuso: 'Homero', votos: [], estado: 'Pendiente' }
+    ],
+    Tareas: [
+      { id: 't1', viaje: v, titulo: 'Comprar vuelos Lisboa → Barcelona', responsable: 'Homero', creadaPor: 'Homero', hecha: true, fechaHecha: hoy },
+      { id: 't2', viaje: v, titulo: 'Comprar vuelo Barcelona → Estrasburgo', responsable: 'Tilin', creadaPor: 'Homero', hecha: true, fechaHecha: hoy },
+      { id: 't3', viaje: v, titulo: 'Comprar entradas mercado Ravennaschlucht', responsable: 'Belén', creadaPor: 'Homero', hecha: true, fechaHecha: hoy },
+      { id: 't4', viaje: v, titulo: 'Reservar coche (aeropuerto de Estrasburgo)', responsable: 'Mauricio', creadaPor: 'Homero', hecha: false, fechaHecha: '' },
+      { id: 't5', viaje: v, titulo: 'Airbnb Barcelona (sáb → dom)', responsable: 'Todos', creadaPor: 'Homero', hecha: false, fechaHecha: '' },
+      { id: 't6', viaje: v, titulo: 'Alojamiento en la Ravennaschlucht', responsable: 'Todos', creadaPor: 'Homero', hecha: false, fechaHecha: '' },
+      { id: 't7', viaje: v, titulo: 'Comprar vuelo de regreso', responsable: 'Todos', creadaPor: 'Homero', hecha: false, fechaHecha: '' }
+    ]
+  };
+}
+function repartoIgualFijo(t, p) { const r = {}; p.forEach(x => r[x] = Math.round(t / p.length * 100) / 100); return r; }
+let DB = null;
+function demo(req) {
+  if (!DB) { try { DB = JSON.parse(ls('viajes_demo_db') || 'null'); } catch (e) { DB = null; } if (!DB) DB = demoBase(); }
+  const guardarDB = () => ls('viajes_demo_db', JSON.stringify(DB));
+  const c = String(req.codigo || '').trim().toUpperCase();
+  const admin = c === 'MAESTRO';
+  const vc = DB.Viajes.find(v => v.codigo === c);
+  if (!admin && !vc) return Promise.reject(new Error('Código no válido'));
+  const puede = vid => admin || (vc && vc.id === vid);
+  const copia = o => JSON.parse(JSON.stringify(o));
+  const visibles = () => DB.Viajes.filter(v => admin || v.id === vc.id).map(v => { const x = copia(v); if (!admin) delete x.codigo; return x; });
+  let res;
+  switch (req.accion) {
+    case 'login': res = { admin, viajes: visibles() }; break;
+    case 'cargar':
+      if (!puede(req.viaje)) return Promise.reject(new Error('Sin acceso a este viaje'));
+      res = { viaje: visibles().find(v => v.id === req.viaje) };
+      ['Gastos', 'Pagos', 'Dias', 'Items', 'Lugares', 'Tareas'].forEach(t => res[t.toLowerCase()] = copia(DB[t].filter(f => f.viaje === req.viaje)));
+      break;
+    case 'guardar': {
+      if (!puede(req.fila.viaje)) return Promise.reject(new Error('Sin acceso'));
+      const t = DB[req.tabla], i = t.findIndex(f => f.id === req.fila.id);
+      if (i >= 0) t[i] = copia(req.fila); else t.push(copia(req.fila));
+      res = { fila: req.fila }; break;
+    }
+    case 'borrar':
+      DB[req.tabla] = DB[req.tabla].filter(f => !(f.id === req.id && f.viaje === req.viaje));
+      if (req.tabla === 'Dias') DB.Items = DB.Items.filter(f => f.dia !== req.id);
+      res = {}; break;
+    case 'votar': {
+      const l = DB.Lugares.find(f => f.id === req.id); const vs = l.votos || [];
+      l.votos = vs.includes(req.persona) ? vs.filter(x => x !== req.persona) : vs.concat(req.persona);
+      res = { fila: copia(l) }; break;
+    }
+    case 'album': { const v = DB.Viajes.find(x => x.id === req.viaje); v.album = req.url; res = { fila: { album: req.url } }; break; }
+    case 'guardarViaje': {
+      if (!admin) return Promise.reject(new Error('Solo con el código maestro'));
+      const f = copia(req.fila);
+      if (f.codigo.length < 4) return Promise.reject(new Error('El código debe tener al menos 4 caracteres'));
+      if (DB.Viajes.some(v => v.id !== f.id && v.codigo === f.codigo)) return Promise.reject(new Error('Ya hay otro viaje con ese código'));
+      if (!f.id) f.id = id();
+      const i = DB.Viajes.findIndex(v => v.id === f.id); if (i >= 0) DB.Viajes[i] = f; else DB.Viajes.push(f);
+      res = { fila: f }; break;
+    }
+    default: return Promise.reject(new Error('Acción desconocida'));
+  }
+  guardarDB();
+  return new Promise(ok => setTimeout(() => ok(Object.assign({ ok: true }, res)), 60));
+}
+
+/* ---------- arranque ---------- */
+if (S.codigo) entrar(S.codigo); else render();
+</script>
+</body>
+</html>
